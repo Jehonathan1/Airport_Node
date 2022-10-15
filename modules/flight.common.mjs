@@ -1,21 +1,26 @@
 import log from "@ajar/marker";
+import {EventEmitter} from 'events';
+import dayjs from 'dayjs' 
 
 /*
 Create and export the Flight Class
 */  
 
-export default class Flight {
-	constructor(number, origin, destination, departed, arrived) {
+export default class Flight extends EventEmitter {
+	constructor(number, origin, destination, departed=false, arrived=false) {
+        super()
         // --------------------------------
 		// --== Class properties ==--
         // --------------------------------
 		this._number = number;
 		this._origin = origin;
 		this._destination = destination;
-		this.departed = departed;
-		this.arrived = arrived;
+		this._departed = departed;
+		this._arrived = arrived;
 
-		log.green("constructor running here!");
+        const randome_delay = Math.round(( 2 + ( Math.random() * 3 )) * 1000 );
+        setTimeout(this.#arrive, randome_delay);
+
 	}
 	// --------------------------------
 	// --== Class Methods ==--
@@ -52,11 +57,18 @@ export default class Flight {
 		this._destination = value.toUpperCase();
 	}
 
+    //-------------------------------------------------------------------------------------
+    
 	// private method
-	arrive() {
-		const { destination } = this;
-		return `Hello from ${destination}`;
+	#arrive = () => {
+        // log.magenta('#arrive was called')
+		this.arrived = dayjs().format('MMM.D.YYYY, HH:MM:ss');
+        const{ number, origin, destination, arrived } = this;
+        this.emit(`Arrived:`, `${number} from: ${origin} to ${destination} on ${arrived}`)
 	}
 	// public method
-	depart() {}
+	depart () {
+        this.departed = dayjs().format('MMM.D.YYYY, HH:MM:ss');;
+        log.yellow('departed:', this.departed);
+    }
 };
