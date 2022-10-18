@@ -1,4 +1,3 @@
-import log from "@ajar/marker";
 import {liftOff, flightsTotal} from "./modules/flightmanager.common.mjs";
 import all_data from "./data/flights.json" assert { type: "json" };
 
